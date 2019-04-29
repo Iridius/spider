@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">spider</string>
+    <string name="ACTIVITY_ENTITY">entity</string>
+    <string name="ACTIVITY_NEED_REFRESH">need_refresh</string>
+</resources>
