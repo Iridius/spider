@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-public class AddEditThemeActivity extends AppCompatActivity {
+public class EntityActivity extends AppCompatActivity {
     private static final int MODE_CREATE = 1;
     private static final int MODE_EDIT = 2;
     private int mode;
@@ -52,7 +52,7 @@ public class AddEditThemeActivity extends AppCompatActivity {
 
         if(mode == MODE_CREATE ) {
             this.entity = new Entity(name, description);
-            db.addTheme(entity);
+            db.addEntity(entity);
         } else {
             this.entity.setName(name);
             this.entity.setDescription(description);

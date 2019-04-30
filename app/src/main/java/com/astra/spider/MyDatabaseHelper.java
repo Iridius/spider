@@ -8,6 +8,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -28,6 +30,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_DESCRIPTION = "description";
 
     private Context mContext;
+    private SQLiteDatabase db;
 
     MyDatabaseHelper(Context context)  {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -63,17 +66,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
 //        return super.getReadableDatabase();
 //    }
 
-//    void createDefaultNotesIfNeed()  {
-//        int count = this.getNotesCount();
-//        if(count ==0 ) {
-//            Theme theme1 = new Theme("Авиация","");
-//            Theme theme2 = new Theme("Бронетехника", "");
-//            this.addTheme(theme1);
-//            this.addTheme(theme2);
-//        }
-//    }
-
-    private void installDatabaseFromAssets() throws IOException {
+    private void installDatabaseFromAssets() {
         try {
 
             InputStream mInputStream = mContext.getAssets().open(DATABASE_NAME);
@@ -92,82 +85,68 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    void addTheme(Entity theme) {
-        Log.i(TAG, "MyDatabaseHelper.addNote ... " + theme.getName());
+    void addEntity(Entity entity) {
+        Log.i(TAG, "MyDatabaseHelper.addNote ... " + entity.getName());
 
-        //SQLiteDatabase db = this.getWritableDatabase();
-        SQLiteDatabase db = this.getReadableDatabase();
+        db = this.getReadableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(COLUMN_NAME, theme.getName());
-        values.put(COLUMN_DESCRIPTION, theme.getDescription());
+        values.put(COLUMN_NAME, entity.getName());
+        values.put(COLUMN_DESCRIPTION, entity.getDescription());
 
         db.insert(TABLE_NAME, null, values);
         db.close();
     }
 
-    public Entity getName(int id) {
-        Log.i(TAG, "MyDatabaseHelper.getNote ... " + id);
-
-        SQLiteDatabase db = this.getReadableDatabase();
-
-        @SuppressLint("Recycle")
-        Cursor cursor = db.query(
-                TABLE_NAME,
-                new String[] {COLUMN_ID, COLUMN_NAME, COLUMN_DESCRIPTION},
-                COLUMN_ID + "=?",
-                new String[] { String.valueOf(id) }, null, null, null, null);
-        if (cursor != null)
-            cursor.moveToFirst();
-
-        Entity theme = new Entity(Integer.parseInt(cursor.getString(0)),
-                cursor.getString(1), cursor.getString(2));
-
-        return theme;
-    }
-
     List<Entity> getEntities() {
         Log.i(TAG, "MyDatabaseHelper.getAllNotes ... " );
 
-        List<Entity> noteList = new ArrayList<Entity>();
+        List<Entity> noteList = new ArrayList<>();
         String selectQuery = "SELECT * FROM " + TABLE_NAME;
 
-        //SQLiteDatabase db = this.getWritableDatabase();
-        SQLiteDatabase db = SQLiteDatabase.openDatabase(DATABASE_PATH + DATABASE_NAME, null, SQLiteDatabase.OPEN_READWRITE);
-        //SQLiteDatabase db = mContext.g
+        db = SQLiteDatabase.openDatabase(DATABASE_PATH + DATABASE_NAME, null, SQLiteDatabase.OPEN_READWRITE);
+        //db.getVersion();
 
         @SuppressLint("Recycle")
-        //Cursor cursor = db.rawQuery(selectQuery, null);
         Cursor cursor = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table' ORDER BY name", null);
 
         if (cursor.moveToFirst()) {
             do {
-                Entity theme = new Entity();
-                theme.setName(cursor.getString(0));
-                noteList.add(theme);
+                String table_name = cursor.getString(0);
+                String rows_count = getRowCount(table_name);
+
+                if(!table_name.equals("android_metadata")){
+                    Entity entity = new Entity();
+                    entity.setName(table_name + rows_count);
+
+                    noteList.add(entity);
+                }
             } while (cursor.moveToNext());
         }
 
         return noteList;
     }
 
-//    private int getNotesCount() {
-//        Log.i(TAG, "MyDatabaseHelper.getNotesCount ... " );
-//
-//        String countQuery = "SELECT  * FROM " + TABLE_NAME;
-//        SQLiteDatabase db = this.getReadableDatabase();
-//        Cursor cursor = db.rawQuery(countQuery, null);
-//
-//        int count = cursor.getCount();
-//        cursor.close();
-//
-//        return count;
-//    }
+    @NotNull
+    private String getRowCount(String table_name) {
+        Cursor cursor = db.rawQuery("SELECT COUNT(*) AS cnt FROM " + table_name, null);
+
+        if(cursor.moveToFirst()) {
+            String result = cursor.getString(0);
+            if(!result.equals("0")){
+                cursor.close();
+                return " (" + result + ")";
+            }
+        }
+
+        cursor.close();
+        return "";
+    }
 
     void updateNote(Entity entity) {
         Log.i(TAG, "MyDatabaseHelper.updateNote ... "  + entity.getName());
 
-        SQLiteDatabase db = this.getWritableDatabase();
+        db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
         values.put(COLUMN_NAME, entity.getName());
@@ -179,9 +158,8 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
     void deleteTheme(Entity entity) {
         Log.i(TAG, "MyDatabaseHelper.updateNote ... " + entity.getName() );
 
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(TABLE_NAME, COLUMN_ID + " = ?",
-                new String[] { String.valueOf(entity.getId()) });
+        db = this.getWritableDatabase();
+        db.delete(TABLE_NAME, COLUMN_ID + " = ?", new String[] { String.valueOf(entity.getId()) });
         db.close();
     }
 }

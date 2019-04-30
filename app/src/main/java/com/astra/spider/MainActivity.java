@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int MENU_ITEM_DELETE = 444;
     private static final int MY_REQUEST_CODE = 1000;
 
-    private final List<Entity> themes = new ArrayList<Entity>();
+    private final List<Entity> themes = new ArrayList<>();
     private ArrayAdapter<Entity> listViewAdapter;
 
     @Override
@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
         List<Entity> list = db.getEntities();
         themes.addAll(list);
 
-        this.listViewAdapter = new ArrayAdapter<Entity>(this, android.R.layout.simple_list_item_1, android.R.id.text1, themes);
+        this.listViewAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, android.R.id.text1, themes);
         this.listView.setAdapter(this.listViewAdapter);
         registerForContextMenu(this.listView);
 
@@ -75,12 +75,12 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(),selectedNote.getDescription(),Toast.LENGTH_LONG).show();
                 break;
             case MENU_ITEM_CREATE:
-                intent = new Intent(this, AddEditThemeActivity.class);
+                intent = new Intent(this, EntityActivity.class);
 
                 this.startActivityForResult(intent, MY_REQUEST_CODE);
                 break;
             case MENU_ITEM_EDIT:
-                intent = new Intent(this, AddEditThemeActivity.class);
+                intent = new Intent(this, EntityActivity.class);
                 intent.putExtra(String.valueOf(R.string.ACTIVITY_ENTITY), (Serializable) selectedNote);
 
                 this.startActivityForResult(intent,MY_REQUEST_CODE);

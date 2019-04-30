@@ -1,5 +1,7 @@
 package com.astra.spider;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.Serializable;
 
 public class Entity /*implements Serializable*/ {
@@ -9,7 +11,6 @@ public class Entity /*implements Serializable*/ {
     private String description;
 
     Entity(){
-
     }
 
     Entity(int id, String name, String description) {
@@ -47,6 +48,7 @@ public class Entity /*implements Serializable*/ {
         this.description = description;
     }
 
+    @NotNull
     @Override
     public String toString()  {
         return this.name;
