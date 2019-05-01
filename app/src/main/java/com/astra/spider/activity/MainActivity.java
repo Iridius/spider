@@ -1,4 +1,4 @@
-package com.astra.spider;
+package com.astra.spider.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -14,11 +14,11 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.astra.spider.R;
 import com.astra.spider.dao.Entity;
 import com.astra.spider.database.MyDatabaseHelper;
 import com.facebook.stetho.Stetho;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int MENU_ITEM_DELETE = 444;
     private static final int MY_REQUEST_CODE = 1000;
 
-    private final List<Entity> themes = new ArrayList<>();
+    private final List<Entity> entities = new ArrayList<>();
     private ArrayAdapter<Entity> listViewAdapter;
 
     @Override
@@ -45,9 +45,9 @@ public class MainActivity extends AppCompatActivity {
 
         db = new MyDatabaseHelper(this);
         List<Entity> list = db.getEntities();
-        themes.addAll(list);
+        entities.addAll(list);
 
-        this.listViewAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, android.R.id.text1, themes);
+        this.listViewAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, android.R.id.text1, entities);
         this.listView.setAdapter(this.listViewAdapter);
         registerForContextMenu(this.listView);
 
@@ -105,9 +105,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void deleteEntity(Entity entity)  {
-        db.deleteTheme(entity);
+        db.deleteEntity(entity);
 
-        this.themes.remove(entity);
+        this.entities.remove(entity);
         this.listViewAdapter.notifyDataSetChanged();
     }
 
@@ -117,8 +117,8 @@ public class MainActivity extends AppCompatActivity {
             boolean needRefresh = data.getBooleanExtra(String.valueOf(R.string.ACTIVITY_NEED_REFRESH),true);
 
             if(needRefresh) {
-                this.themes.clear();
-                this.themes.addAll(db.getEntities());
+                this.entities.clear();
+                this.entities.addAll(db.getEntities());
                 this.listViewAdapter.notifyDataSetChanged();
             }
         }

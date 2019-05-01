@@ -122,7 +122,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         return "";
     }
 
-    public void updateNote(Entity entity) {
+    public void updateEntity(Entity entity) {
         Log.i(TAG, "MyDatabaseHelper.updateNote ... "  + entity.getName());
 
         db = this.getWritableDatabase();
@@ -134,7 +134,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         db.update(TABLE_NAME, values, COLUMN_ID + " = ?", new String[]{String.valueOf(entity.getId())});
     }
 
-    public void deleteTheme(Entity entity) {
+    public void deleteEntity(Entity entity) {
         Log.i(TAG, "MyDatabaseHelper.updateNote ... " + entity.getName() );
 
         db = this.getWritableDatabase();

@@ -1,4 +1,4 @@
-package com.astra.spider;
+package com.astra.spider.activity;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.astra.spider.R;
 import com.astra.spider.dao.Entity;
 import com.astra.spider.database.MyDatabaseHelper;
 
@@ -60,7 +61,7 @@ public class EntityActivity extends AppCompatActivity {
         } else {
             this.entity.setName(name);
             this.entity.setDescription(description);
-            db.updateNote(entity);
+            db.updateEntity(entity);
         }
 
         this.needRefresh = true;
