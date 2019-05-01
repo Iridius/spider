@@ -1,4 +1,4 @@
-package com.astra.spider;
+package com.astra.spider.database;
 
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
@@ -8,18 +8,16 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.astra.spider.dao.Entity;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.io.FileOutputStream;
-
 
 public class MyDatabaseHelper extends SQLiteOpenHelper {
-
     private static final String TAG = "SQLite";
     private static final int DATABASE_VERSION = 1;
     private static String DATABASE_PATH = "";
@@ -28,21 +26,16 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_ID ="id";
     private static final String COLUMN_NAME ="name";
     private static final String COLUMN_DESCRIPTION = "description";
-
     private Context mContext;
     private SQLiteDatabase db;
 
-    MyDatabaseHelper(Context context)  {
+    public MyDatabaseHelper(Context context)  {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         DATABASE_PATH = context.getApplicationInfo().dataDir + "/databases/";
         mContext = context;
 
-        try {
-            context.deleteDatabase(DATABASE_NAME);
-            installDatabaseFromAssets();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        context.deleteDatabase(DATABASE_NAME);
+        installDatabaseFromAssets();
     }
 
     @Override
@@ -52,19 +45,6 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
     }
-
-    //@Override
-    //public SQLiteDatabase getReadableDatabase()  {
-        //installOrUpdateIfNecessary()
-        //mContext.deleteDatabase(DATABASE_NAME);
-
-//        try {
-//            installDatabaseFromAssets();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        return super.getReadableDatabase();
-//    }
 
     private void installDatabaseFromAssets() {
         try {
@@ -85,7 +65,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    void addEntity(Entity entity) {
+    public void addEntity(Entity entity) {
         Log.i(TAG, "MyDatabaseHelper.addNote ... " + entity.getName());
 
         db = this.getReadableDatabase();
@@ -98,14 +78,13 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    List<Entity> getEntities() {
+    public List<Entity> getEntities() {
         Log.i(TAG, "MyDatabaseHelper.getAllNotes ... " );
 
         List<Entity> noteList = new ArrayList<>();
-        String selectQuery = "SELECT * FROM " + TABLE_NAME;
+        //String selectQuery = "SELECT * FROM " + TABLE_NAME;
 
         db = SQLiteDatabase.openDatabase(DATABASE_PATH + DATABASE_NAME, null, SQLiteDatabase.OPEN_READWRITE);
-        //db.getVersion();
 
         @SuppressLint("Recycle")
         Cursor cursor = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table' ORDER BY name", null);
@@ -143,7 +122,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         return "";
     }
 
-    void updateNote(Entity entity) {
+    public void updateNote(Entity entity) {
         Log.i(TAG, "MyDatabaseHelper.updateNote ... "  + entity.getName());
 
         db = this.getWritableDatabase();
@@ -155,7 +134,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         db.update(TABLE_NAME, values, COLUMN_ID + " = ?", new String[]{String.valueOf(entity.getId())});
     }
 
-    void deleteTheme(Entity entity) {
+    public void deleteTheme(Entity entity) {
         Log.i(TAG, "MyDatabaseHelper.updateNote ... " + entity.getName() );
 
         db = this.getWritableDatabase();

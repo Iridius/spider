@@ -4,8 +4,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,6 +14,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.astra.spider.dao.Entity;
+import com.astra.spider.database.MyDatabaseHelper;
 import com.facebook.stetho.Stetho;
 
 import java.io.Serializable;
@@ -81,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case MENU_ITEM_EDIT:
                 intent = new Intent(this, EntityActivity.class);
-                intent.putExtra(String.valueOf(R.string.ACTIVITY_ENTITY), (Serializable) selectedNote);
+                intent.putExtra(String.valueOf(R.string.ACTIVITY_ENTITY), selectedNote);
 
                 this.startActivityForResult(intent,MY_REQUEST_CODE);
                 break;

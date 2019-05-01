@@ -4,4 +4,6 @@
     <string name="ACTIVITY_NEED_REFRESH">need_refresh</string>
     <string name="save">Сохранить</string>
     <string name="cancel">Отмена</string>
+    <string name="name">Наименование</string>
+    <string name="description">Примечание</string>
 </resources>

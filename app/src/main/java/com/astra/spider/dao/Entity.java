@@ -1,16 +1,16 @@
-package com.astra.spider;
+package com.astra.spider.dao;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
 
-public class Entity /*implements Serializable*/ {
+public class Entity implements Serializable {
 
     private int id;
     private String name;
     private String description;
 
-    Entity(){
+    public Entity(){
     }
 
     Entity(int id, String name, String description) {
@@ -19,12 +19,12 @@ public class Entity /*implements Serializable*/ {
         this.description = description;
     }
 
-    Entity(String name, String description) {
+    public Entity(String name, String description) {
         this.name = name;
         this.description = description;
     }
 
-    int getId() {
+    public int getId() {
         return id;
     }
 
@@ -32,19 +32,19 @@ public class Entity /*implements Serializable*/ {
         this.id = id;
     }
 
-    String getName() {
+    public String getName() {
         return name;
     }
 
-    void setName(String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
-    String getDescription() {
+    public String getDescription() {
         return description;
     }
 
-    void setDescription(String description) {
+    public void setDescription(String description) {
         this.description = description;
     }
 

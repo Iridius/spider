@@ -10,7 +10,7 @@
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/text_note_title"
+        android:id="@+id/text_entity_name"
         android:layout_row="0"
         android:layout_column="0"
         android:layout_gravity="fill_horizontal"
@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:inputType="textMultiLine"
         android:ems="10"
-        android:id="@+id/text_note_content"
+        android:id="@+id/text_entity_description"
         android:layout_row="1"
         android:layout_column="0"
         android:layout_gravity="fill"

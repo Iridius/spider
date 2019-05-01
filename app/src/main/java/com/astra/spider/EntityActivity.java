@@ -1,5 +1,6 @@
 package com.astra.spider;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -8,6 +9,10 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.astra.spider.dao.Entity;
+import com.astra.spider.database.MyDatabaseHelper;
+
+@SuppressLint("Registered")
 public class EntityActivity extends AppCompatActivity {
     private static final int MODE_CREATE = 1;
     private static final int MODE_EDIT = 2;
@@ -22,10 +27,10 @@ public class EntityActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_edit_theme);
+        setContentView(R.layout.activity_entity);
 
-        this.textName = this.findViewById(R.id.text_note_title);
-        this.textDescription = this.findViewById(R.id.text_note_content);
+        this.textName = this.findViewById(R.id.text_entity_name);
+        this.textDescription = this.findViewById(R.id.text_entity_description);
 
         Intent intent = this.getIntent();
         this.entity = (Entity) intent.getSerializableExtra(String.valueOf(R.string.ACTIVITY_ENTITY));
@@ -36,7 +41,6 @@ public class EntityActivity extends AppCompatActivity {
             this.textName.setText(entity.getName());
             this.textDescription.setText(entity.getDescription());
         }
-
     }
 
     public void buttonSaveClicked(View view)  {
