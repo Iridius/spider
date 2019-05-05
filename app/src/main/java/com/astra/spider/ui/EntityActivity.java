@@ -1,4 +1,4 @@
-package com.astra.spider.activity;
+package com.astra.spider.ui;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
