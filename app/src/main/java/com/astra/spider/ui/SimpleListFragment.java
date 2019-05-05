@@ -54,7 +54,7 @@ public class SimpleListFragment extends Fragment{
         listView.setAdapter(listAdapter);
 
         /* Контекстное меню */
-        registerForContextMenu(view);
+        registerForContextMenu(listView);
 
         return view;
     }
@@ -75,11 +75,18 @@ public class SimpleListFragment extends Fragment{
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 
         Intent intent;
-        final Entity selectedNote = (Entity) this.listView.getItemAtPosition(info.position);
+        final Entity currentEntity = (Entity) this.listView.getItemAtPosition(info.position);
 
         switch(item.getItemId()){
             case MENU_ITEM_VIEW:
-                Toast.makeText(activity.getApplicationContext(),selectedNote.getDescription(),Toast.LENGTH_LONG).show();
+                if(activity.getEntityName().length() == 0){
+                    /* Выбрана сущность для просмотра и редактирования */
+                    activity.setEntityName(currentEntity.getName());
+                    Toast.makeText(activity.getApplicationContext(), currentEntity.getName(), Toast.LENGTH_LONG).show();
+                } else {
+                    /* Выбрана какая-то запись текущей сущности */
+                    Toast.makeText(activity.getApplicationContext(), currentEntity.getDescription(), Toast.LENGTH_LONG).show();
+                }
                 break;
             case MENU_ITEM_CREATE:
                 intent = new Intent(activity, EntityActivity.class);
@@ -88,16 +95,16 @@ public class SimpleListFragment extends Fragment{
                 break;
             case MENU_ITEM_EDIT:
                 intent = new Intent(activity, EntityActivity.class);
-                intent.putExtra(String.valueOf(R.string.ACTIVITY_ENTITY), selectedNote);
+                intent.putExtra(String.valueOf(R.string.ACTIVITY_ENTITY), currentEntity);
 
                 this.startActivityForResult(intent,MY_REQUEST_CODE);
                 break;
             case MENU_ITEM_DELETE:
                 new AlertDialog.Builder(activity)
-                        .setMessage(selectedNote.getName()+". Вы уверены, что хотите удалить запись?")
+                        .setMessage(currentEntity.getName()+". Вы уверены, что хотите удалить запись?")
                         .setCancelable(false)
                         .setPositiveButton("Да", new DialogInterface.OnClickListener(){
-                            public void onClick(DialogInterface dialog, int id) {deleteEntity(selectedNote);
+                            public void onClick(DialogInterface dialog, int id) {deleteEntity(currentEntity);
                             }
                         })
                         .setNegativeButton("Нет", null)
