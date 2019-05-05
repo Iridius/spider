@@ -26,16 +26,15 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_ID ="id";
     private static final String COLUMN_NAME ="name";
     private static final String COLUMN_DESCRIPTION = "description";
-    private Context mContext;
     private SQLiteDatabase db;
 
     public MyDatabaseHelper(Context context)  {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         DATABASE_PATH = context.getApplicationInfo().dataDir + "/databases/";
-        mContext = context;
+        db = SQLiteDatabase.openDatabase(DATABASE_PATH + DATABASE_NAME, null, SQLiteDatabase.OPEN_READWRITE);
 
         context.deleteDatabase(DATABASE_NAME);
-        installDatabaseFromAssets();
+        installDatabaseFromAssets(context);
     }
 
     @Override
@@ -44,25 +43,6 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-    }
-
-    private void installDatabaseFromAssets() {
-        try {
-
-            InputStream mInputStream = mContext.getAssets().open(DATABASE_NAME);
-            OutputStream mOutputStream = new FileOutputStream(DATABASE_PATH + DATABASE_NAME);
-
-            byte[] buffer = new byte[1024];
-            int length;
-            while ((length = mInputStream.read(buffer)) > 0) {
-                mOutputStream.write(buffer, 0, length);
-            }
-            mOutputStream.flush();
-            mOutputStream.close();
-            mInputStream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     public void addEntity(Entity entity) {
@@ -78,16 +58,18 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public List<Entity> getEntities() {
-        Log.i(TAG, "MyDatabaseHelper.getAllNotes ... " );
+    public List<Entity> getEntities(String entityName) {
+        List<Entity> list = new ArrayList<>();
+        String query = "";
 
-        List<Entity> noteList = new ArrayList<>();
-        //String selectQuery = "SELECT * FROM " + TABLE_NAME;
-
-        db = SQLiteDatabase.openDatabase(DATABASE_PATH + DATABASE_NAME, null, SQLiteDatabase.OPEN_READWRITE);
+        if(entityName.length() == 0){
+            query = "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name";
+        } else {
+            query = "SELECT name FROM " + entityName;
+        }
 
         @SuppressLint("Recycle")
-        Cursor cursor = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table' ORDER BY name", null);
+        Cursor cursor = db.rawQuery(query, null);
 
         if (cursor.moveToFirst()) {
             do {
@@ -98,12 +80,12 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
                     Entity entity = new Entity();
                     entity.setName(table_name + rows_count);
 
-                    noteList.add(entity);
+                    list.add(entity);
                 }
             } while (cursor.moveToNext());
         }
 
-        return noteList;
+        return list;
     }
 
     @NotNull
@@ -140,5 +122,24 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         db = this.getWritableDatabase();
         db.delete(TABLE_NAME, COLUMN_ID + " = ?", new String[] { String.valueOf(entity.getId()) });
         db.close();
+    }
+
+    private void installDatabaseFromAssets(Context context) {
+        try {
+
+            InputStream mInputStream = context.getAssets().open(DATABASE_NAME);
+            OutputStream mOutputStream = new FileOutputStream(DATABASE_PATH + DATABASE_NAME);
+
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = mInputStream.read(buffer)) > 0) {
+                mOutputStream.write(buffer, 0, length);
+            }
+            mOutputStream.flush();
+            mOutputStream.close();
+            mInputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
