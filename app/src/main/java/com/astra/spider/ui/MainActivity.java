@@ -13,6 +13,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        /* Основной фрагмент, в котором происходит просмотр данных */
         FragmentManager fm = getSupportFragmentManager();
         SimpleListFragment fragment = (SimpleListFragment) fm.findFragmentById(R.id.fragment_container);
         if(fragment == null){

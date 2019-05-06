@@ -19,6 +19,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.astra.spider.R;
+import com.astra.spider.dao.CurrentEntity;
 import com.astra.spider.dao.Entity;
 import com.astra.spider.database.MyDatabaseHelper;
 
@@ -79,10 +80,13 @@ public class SimpleListFragment extends Fragment{
 
         switch(item.getItemId()){
             case MENU_ITEM_VIEW:
-                if(activity.getEntityName().length() == 0){
+                if(CurrentEntity.getInstance().getEntityName().length() == 0){
                     /* Выбрана сущность для просмотра и редактирования */
-                    activity.setEntityName(currentEntity.getName());
-                    Toast.makeText(activity.getApplicationContext(), currentEntity.getName(), Toast.LENGTH_LONG).show();
+                    CurrentEntity.getInstance().setEntityName(currentEntity.getName());
+                    list.clear();
+                    list.addAll(getData());
+                    listAdapter.notifyDataSetChanged();
+                    //Toast.makeText(activity.getApplicationContext(), currentEntity.getName(), Toast.LENGTH_LONG).show();
                 } else {
                     /* Выбрана какая-то запись текущей сущности */
                     Toast.makeText(activity.getApplicationContext(), currentEntity.getDescription(), Toast.LENGTH_LONG).show();
@@ -130,7 +134,7 @@ public class SimpleListFragment extends Fragment{
 
             if(needRefresh) {
                 list.clear();
-                list.addAll(db.getEntities(activity.getEntityName()));
+                list.addAll(db.getEntities(CurrentEntity.getInstance().getEntityName()));
                 listAdapter.notifyDataSetChanged();
             }
         }
@@ -138,7 +142,7 @@ public class SimpleListFragment extends Fragment{
 
     /* Получение данных из базы данных, - либо заданная таблица, либо список доступных таблиц */
     private List<Entity> getData() {
-        String entityName = activity.getEntityName();
+        String entityName = CurrentEntity.getInstance().getEntityName();
 
         return new ArrayList<>(db.getEntities(entityName));
     }

@@ -9,14 +9,9 @@ public class Entity implements Serializable {
     private int id;
     private String name;
     private String description;
+    private String tag;
 
     public Entity(){
-    }
-
-    Entity(int id, String name, String description) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
     }
 
     public Entity(String name, String description) {
@@ -51,6 +46,19 @@ public class Entity implements Serializable {
     @NotNull
     @Override
     public String toString()  {
-        return this.name;
+        String _tag = "";
+        if(tag != null && !tag.equals("0")){
+            _tag = " (" + this.tag + ")";
+        }
+
+        return this.name + _tag;
+    }
+
+    public String getTag() {
+        return tag;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
     }
 }

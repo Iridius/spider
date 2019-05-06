@@ -74,11 +74,16 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 String table_name = cursor.getString(0);
-                String rows_count = getRowCount(table_name);
 
                 if(!table_name.equals("android_metadata")){
                     Entity entity = new Entity();
-                    entity.setName(table_name + rows_count);
+                    entity.setName(table_name);
+
+                    /* Если просматривается весь список таблиц, то определить количество записей в каждой из них */
+                    if(entityName.length() == 0) {
+                        int rows_count = getRowCount(table_name);
+                        entity.setTag(String.valueOf(rows_count));
+                    }
 
                     list.add(entity);
                 }
@@ -89,19 +94,17 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
     }
 
     @NotNull
-    private String getRowCount(String table_name) {
+    private int getRowCount(String table_name) {
         Cursor cursor = db.rawQuery("SELECT COUNT(*) AS cnt FROM " + table_name, null);
 
         if(cursor.moveToFirst()) {
-            String result = cursor.getString(0);
-            if(!result.equals("0")){
+            int result = cursor.getInt(0);
                 cursor.close();
-                return " (" + result + ")";
-            }
+                return result;
         }
 
         cursor.close();
-        return "";
+        return 0;
     }
 
     public void updateEntity(Entity entity) {
