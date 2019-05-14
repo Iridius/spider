@@ -31,7 +31,14 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
     public MyDatabaseHelper(Context context)  {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         DATABASE_PATH = context.getApplicationInfo().dataDir + "/databases/";
-        db = SQLiteDatabase.openDatabase(DATABASE_PATH + DATABASE_NAME, null, SQLiteDatabase.OPEN_READWRITE);
+
+        try {
+            // если база данных уже существует
+            db = SQLiteDatabase.openDatabase(DATABASE_PATH + DATABASE_NAME, null, SQLiteDatabase.OPEN_READWRITE);
+        } catch(Exception e){
+            // если база данных не существует (первый запуск)
+            db = this.getWritableDatabase();
+        }
 
         context.deleteDatabase(DATABASE_NAME);
         installDatabaseFromAssets(context);
