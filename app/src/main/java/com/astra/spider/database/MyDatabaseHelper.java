@@ -53,8 +53,6 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
     }
 
     public void addEntity(Entity entity) {
-        Log.i(TAG, "MyDatabaseHelper.addNote ... " + entity.getName());
-
         db = this.getReadableDatabase();
 
         ContentValues values = new ContentValues();
